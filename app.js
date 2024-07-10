@@ -7,7 +7,7 @@ import EventHandler from './src/handler/events.js'
 
   await client.start();
 
-  // const messageHandler = new MessageHandler(client)
+  const messageHandler = new MessageHandler(client)
 
   const { handleEvents, handleCall, handleDeletedMessages } = new EventHandler(client);
 
