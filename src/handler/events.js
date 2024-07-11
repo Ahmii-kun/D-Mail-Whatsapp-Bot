@@ -59,14 +59,16 @@ export default class EventHandler {
     handleEvents = async(event) => {
         const group = await this.fetchGroupMetadata(event.jid);
         this.logEvent(event, group);
+        this.handleMods(event)
 
         const { bot } = await this.client.DB.getGroup(event.jid);
         const groupStatus = await this.client.DB.getGroup(event.jid);
         const welcome = JSON.parse(groupStatus.welcome) || false;
         const goodbye = JSON.parse(groupStatus.goodbye) || false;
 
+        
         if (
-            bot !== this.client.config.session ||
+            bot.toLowerCase() !== 'on' ||
             (event.action === 'remove' &&
                 event.participants.includes(
                     `${(this.client.user?.id || '').split('@')[0].split(':')[0]}@s.whatsapp.net`
@@ -74,21 +76,21 @@ export default class EventHandler {
         ) {
             return;
         }
-
+        
         if (welcome && event.action === 'add') {
-            const customGreetings = groupStatus.customGreetings;
-            const messages = customGreetings && customGreetings.enabled 
-                ? JSON.parse(customGreetings.messages) 
+            const customGreetings = groupStatus.Greetings;
+            const messages = customGreetings && customGreetings.custom
+                ? customGreetings.message
                 : this.greetings;
-            await this.sendMessages(event.jid, event.participants, messages);
+            await this.sendMessages(event.jid, event.participants, messages, customGreetings.custom);
         }
 
         if (goodbye && event.action === 'remove') {
-            const customFarewells = groupStatus.customFarewells;
-            const messages = customFarewells && customFarewells.enabled 
-                ? JSON.parse(customFarewells.messages) 
+            const customFarewells = groupStatus.Farewells;
+            const messages = customFarewells && customFarewells.custom
+                ? customFarewells.message 
                 : this.farewells;
-            await this.sendMessages(event.jid, event.participants, messages);
+            await this.sendMessages(event.jid, event.participants, messages, customFarewells.custom);
         }
     }
 
@@ -107,7 +109,7 @@ export default class EventHandler {
         }
     }
 
-    logEvent(event, group) {
+    logEvent = (event, group) => {
         this.client.log(
             `${chalk.blueBright('EVENT')} ${chalk.green(
                 `${this.client.utils.capitalize(event.action)}[${event.participants.length}]`
@@ -115,14 +117,19 @@ export default class EventHandler {
         );
     }
 
-    async sendMessages(jid, participants, messages) {
+    sendMessages = async(jid, participants, messages, custom) => {
         for (const user of participants) {
+            if (custom) {
+                await this.client.sendMessage(jid, {
+                text: messages,
+                mentions: [user]
+            })} else {
             const text = messages[Math.floor(Math.random() * messages.length)]?.replace('{x}', `@${user.split('@')[0]}`);
             await this.client.sendMessage(jid, {
                 text,
                 mentions: [user]
-            });
-        }
+            })
+        }}
     }
 
     handleCall = async (call) => {

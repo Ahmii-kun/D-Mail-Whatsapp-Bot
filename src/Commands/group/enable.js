@@ -87,7 +87,6 @@ export default class EnableCommand extends BaseCommand {
             }
 
             await this.client.DB.updateGroup(M.from, feature, true);
-            console.log(`Group updated: ${JSON.stringify(group)}`);
             return void M.reply(`🟢 Successfully enabled ${feature}`);
         }
     }

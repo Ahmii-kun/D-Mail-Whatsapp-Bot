@@ -45,7 +45,7 @@ export default class Interface {
           }
       const { notify } = contact[index]
       return {
-          username: notify || verifiedName || name || 'User',
+          username: notify || 'User',
           jid,
           isMod
       }

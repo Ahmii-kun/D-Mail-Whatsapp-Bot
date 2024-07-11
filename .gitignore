@@ -1,3 +1,5 @@
-/.env
 /.vscode
 /node_modules
+/src/hub/helper.de.js
+/src/frameWork/sanitize.de.js
+/public/script.de.js

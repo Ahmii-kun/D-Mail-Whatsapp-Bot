@@ -24,6 +24,4 @@ import EventHandler from './src/handler/events.js'
     await client.commands.loadCommands();
     await client.loadMods()
 })
-
-
 })();

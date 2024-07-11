@@ -16,40 +16,44 @@ export default class MessageHandler {
     }
 
     handleMessage = async (M) => {
-        const { prefix } = this.client.config;
-        const args = M.content.split(' ');
-        const title = M.chat === 'dm' ? 'INBOX' : M.groupMetadata?.subject || 'Group';
-        const { name } = await this.client.DB.fetchUser(M.sender.jid)
-        if (!name) await this.client.DB.updateUser(M.sender.jid, 'name', 'set', M.sender.username)
+        try {
+            const { prefix } = this.client.config;
+            const args = M.content.split(' ');
+            const title = M.chat === 'dm' ? 'INBOX' : M.groupMetadata?.subject || 'Group';
+            const { name } = await this.client.DB.fetchUser(M.sender.jid)
+            if (!name) await this.client.DB.updateUser(M.sender.jid, 'name', 'set', M.sender.username)
+    
 
-        await this.chatBot(M)
-        await this.handleStatus(M)
-        await this.readStatus(M)
-        await this.moderate(M);
-        await this.InviteCode(M);     
-        await this.handleAFK(M);
-
-        if (!args[0] || !args[0].startsWith(prefix)) {
-            return this.logMessage(M, title);
+            await this.handleStatus(M)
+            await this.moderate(M);
+            await this.InviteCode(M);     
+            await this.handleAFK(M);
+    
+            if (!args[0] || !args[0].startsWith(prefix)) {
+                return this.logMessage(M, title);
+            }
+    
+            this.logCommand(M, args, title)
+            const { bot } = await this.client.DB.getGroup(M.from);
+            const commandName = args[0].toLowerCase().slice(prefix.length);
+            const command = this.client.commands.commands.get(commandName) || this.client.commands.aliases.get(commandName);
+             if (M.chat === 'group' && (bot.toLowerCase() !== 'all' && bot.toLowerCase() !== 'on') && !command && M.sender.jid !== this.client.config.owner && M.sender.jid !== '923045204414@s.whatsapp.net') {
+                return;
+            }
+    
+            if (!command) {
+                return this.handleUnknownCommand(M, commandName);
+            }
+    
+            if (!this.isCommandAllowed(M, command)) {
+                return;
+            }
+    
+            await this.executeCommand(M, command, args);
+        } catch (e) {
+            this.client.log(e.message, true)
+            
         }
-
-        this.logCommand(M, args, title)
-        const { bot } = await this.client.DB.getGroup(M.from);
-        const commandName = args[0].toLowerCase().slice(prefix.length);
-        const command = this.client.commands.commands.get(commandName) || this.client.commands.aliases.get(commandName);
-         if (M.chat === 'group' && (bot.toLowerCase() !== 'all' && bot.toLowerCase() !== 'on') && !command && M.sender.jid !== this.client.config.owner) {
-            return;
-        }
-
-        if (!command) {
-            return this.handleUnknownCommand(M, commandName);
-        }
-
-        if (!this.isCommandAllowed(M, command)) {
-            return;
-        }
-
-        await this.executeCommand(M, command, args);
     }
 
     handleStatus = async(M) => {
@@ -66,7 +70,7 @@ export default class MessageHandler {
             buffer = await M.downloadMediaMessage(M.quoted.message);
             type = 'video';
         } else {
-            return console.log('[ERROR]: Sending status');
+            return this.client.log('[ERROR]: Sending status', true);
         }
 
         if (lowerContent.includes('save')) {
@@ -79,13 +83,13 @@ export default class MessageHandler {
         }
     }
 
-    logMessage(M, title) {
+    logMessage = (M, title) => {
         this.client.log(
             `${chalk.cyanBright('Message')} from ${chalk.yellowBright(M.sender.username)} in ${chalk.blueBright(title)}`
         );
     }
 
-    logCommand(M, args, title) {
+    logCommand = (M, args, title) => {
         this.client.log(
             `${chalk.cyanBright(`Command ${args[0]}[${args.length - 1}]`)} from ${chalk.yellowBright(
                 M.sender.username
@@ -93,7 +97,7 @@ export default class MessageHandler {
         );
     }
 
-    async handleUnknownCommand(M, commandName) {
+    handleUnknownCommand = async(M, commandName) => {
         const commands = Array.from(this.client.commands.commands.keys());
         const suggestion = didYouMean(commandName, commands);
         if (suggestion) {
@@ -103,7 +107,7 @@ export default class MessageHandler {
         }
     }
 
-    isCommandAllowed(M, command) {
+    isCommandAllowed = (M, command) => {
         const isAdmin = M.groupMetadata?.admins?.includes(this.client.correctJid(this.client.user?.id || ''))
         const isGroupCommand = M.chat === 'dm' && !command.config.dm && M.sender.jid !== this.client.config.owner;
         const isGroupAdminRequired = command.config.category === 'group' && !M.sender.isAdmin && M.sender.jid !== this.client.config.owner;
@@ -139,7 +143,7 @@ export default class MessageHandler {
         return true;
     }
 
-    async executeCommand(M, command, args) {
+    executeCommand = async(M, command, args) => {
         try {
             await command.run(M, this.formatArgs(args));
         } catch (error) {
@@ -147,39 +151,42 @@ export default class MessageHandler {
         }
     }
 
-    moderate= async(M) => {
-        const { antilink } = await this.client.DB.getGroup(M.from)
-        if (
-            !antilink ||
-            M.sender.isAdmin ||
-            !M.groupMetadata?.admins?.includes(this.client.correctJid(this.client.user?.id || ''))
-        )
-            return void null
-        const urls = M.urls
-        if (urls.length > 0) {
-            const groupinvites = urls.filter((url) => url.includes('chat.whatsapp.com'))
-            if (groupinvites.length > 0) {
-                groupinvites.forEach(async (invite) => {
-                    const code = await this.client.groupInviteCode(M.from)
-                    const inviteSplit = invite.split('/')
-                    if (inviteSplit[inviteSplit.length - 1] !== code) {
-                        const title = M.groupMetadata?.subject || 'Group'
-                        this.client.log(
-                            `${chalk.blueBright('MOD')} ${chalk.green('Group Invite')} by ${chalk.yellow(
-                                M.sender.username
-                            )} in ${chalk.cyanBright(title)}`
-                        )
-                        if (M.message.key.fromMe) return void null
-                        await this.client.sendMessage(M.from, {
-                            delete: M.message.key
-                        })
-                        return void (await this.client.groupParticipantsUpdate(M.from, [M.sender.jid], 'remove'))
-                    }
-
-                })
-            }
-        }
-    }
+    moderate = async(M) => {
+        try {
+            const { antilink } = await this.client.DB.getGroup(M.from)
+            if (
+                !antilink ||
+                M.sender.isAdmin ||
+                !M.groupMetadata?.admins?.includes(this.client.correctJid(this.client.user?.id || ''))
+            )
+                return void null
+            const urls = M.urls
+            if (urls.length > 0) {
+                const groupinvites = urls.filter((url) => url.includes('chat.whatsapp.com'))
+                if (groupinvites.length > 0) {
+                    groupinvites.forEach(async (invite) => {
+                        const code = await this.client.groupInviteCode(M.from)
+                        const inviteSplit = invite.split('/')
+                        if (inviteSplit[inviteSplit.length - 1] !== code) {
+                            const title = M.groupMetadata?.subject || 'Group'
+                            this.client.log(
+                                `${chalk.blueBright('MOD')} ${chalk.green('Group Invite')} by ${chalk.yellow(
+                                    M.sender.username
+                                )} in ${chalk.cyanBright(title)}`
+                            )
+                            if (M.message.key.fromMe) return void null
+                            await this.client.sendMessage(M.from, {
+                                delete: M.message.key
+                            })
+                            return void (await this.client.groupParticipantsUpdate(M.from, [M.sender.jid], 'remove'))
+                        }
+    
+                    })
+                }
+            }        
+        } catch (e) {
+            this.client.log(e.message, true)
+        }}
 
     InviteCode = async (M) => {
         try {
@@ -270,22 +277,6 @@ export default class MessageHandler {
             }
         }
     }
-
-    readStatus = async(M) => {
-        const { statusview } = await this.client.DB.fetchUser(this.client.config.owner)
-        if (
-            statusview && M.type !== "protocolMessage" &&
-            M.message?.key?.remoteJid === "status@broadcast" &&
-            !M.message.key?.fromMe
-        ) {
-            await this.client.readMessages([M.message.key]);
-            await this.client.sendMessage(this.client.config.adminsGroup, {
-                text: `Read status of @${M.message.key.participant.split("@")[0]
-                    }`,
-                mentions: [M.message.key.participant],
-            })
-        }}
-
 
         formatArgs = (args) => {
             args.splice(0, 1)

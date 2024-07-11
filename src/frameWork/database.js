@@ -51,11 +51,13 @@ class Database {
     }
 
     async getGroup(id) {
+        if (!id.endsWith('@g.us')) return false
         let group = await this.group.get(id) || this.createDefaultGroup(id);
         return group;
     }
 
     async createDefaultGroup(id) {
+        if (id === 'status@broadcast') return this.Client.log('received status@Broadcast, ...skipping', true)
         const group = {
             id,
             name: '',
@@ -66,7 +68,9 @@ class Database {
             antidelete: false,
             welcome: false,
             goodbye: false,
-            bot: 'DMAIL',
+            Greetings: { custom: false, message: '' },
+            Farewells: { custom: false, message: '' },
+            bot: 'on',
         };
         await this.group.set(id, group);
         return group;
