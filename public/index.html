@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./d-mail.svg" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>El Psy Kongroo</title>
+</head>
+<body>
+    <div class="noise-overlay"></div>
+    <div class="background">
+        <div class="terminal-output">
+            <div class="line">root@d-mail:~# Initializing...</div>
+            <div class="line">root@d-mail:~# Checking systems...</div>
+            <div class="line">root@d-mail:~# System ready.</div>
+            <div class="line">root@d-mail:~# Awaiting user input...</div>
+        </div>
+    </div>
+    <section class="main-container">
+        <div class="greets">
+            <h1 class="typewriter">Welcome to D-Mail!</h1>
+            <p>Choose your login method:</p>
+        </div>
+        <div class="form">
+            <form id="authForm">
+                <h1 class="glitch flicker-line" data-text="Authenticate">Authenticate</h1>
+                <div class="radio-group">
+                    <input type="radio" id="qr" name="loginMethod" value="qr" checked>
+                    <label for="qr">Scan QR Code</label>
+                    <input type="radio" id="code" name="loginMethod" value="code">
+                    <label for="code">Enter Phone Number</label>
+                </div>
+                <div id="qrSection">
+                    <input type="password" placeholder="Session" id="session" name="session"/>
+                </div>
+                <div id="codeSection" class="hidden">
+                    <input type="text" placeholder="Phone Number with Country Code" id="phoneNumber" name="phoneNumber"/>
+                </div>
+                <button type="submit">Authenticate!</button>
+            </form>
+        </div>
+        <div id="responseContainer" class="response-container hidden"></div>
+        <div id="qrContainer" class="qr-container hidden"></div>
+        <div id="loadingBar"><div></div></div>
+        <div class="noise-overlay"></div>
+        <div class="scanlines"></div>
+    </section>
+
+    <script>
+        const loginMethodRadios = document.querySelectorAll('input[name="loginMethod"]');
+        const qrSection = document.getElementById('qrSection');
+        const codeSection = document.getElementById('codeSection');
+        const responseContainer = document.getElementById('responseContainer');
+        const qrContainer = document.getElementById('qrContainer');
+
+        loginMethodRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.value === 'qr') {
+                    qrSection.classList.remove('hidden');
+                    codeSection.classList.add('hidden');
+                } else {
+                    qrSection.classList.add('hidden');
+                    codeSection.classList.remove('hidden');
+                }
+            });
+        });
+
+        document.getElementById('authForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const sessionInput = document.getElementById('session');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            const loginMethod = document.querySelector('input[name="loginMethod"]:checked').value;
+            responseContainer.classList.add('hidden');
+            qrContainer.classList.add('hidden');
+
+            if (loginMethod === 'qr') {
+                const session = sessionInput.value.trim();
+                if (session === '') {
+                    showResponse('Please enter your session password.');
+                    sessionInput.focus();
+                    return;
+                }
+                try {
+                    const response = await fetch(`/wa/qr?session=${encodeURIComponent(session)}`);
+                    if (!response.ok) {
+                        throw new Error('Invalid Session');
+                    }
+                    const blob = await response.blob();
+                    const imageUrl = URL.createObjectURL(blob);
+                    qrContainer.style.display = 'block';
+                    qrContainer.classList.remove('hidden');
+                    qrContainer.innerHTML = `<img src="${imageUrl}" alt="QR Code"/>`;
+                } catch (error) {
+                    showResponse(error.message);
+                }
+            } else if (loginMethod === 'code') {
+                const phoneNumber = phoneNumberInput.value.trim();
+                if (phoneNumber === '') {
+                    showResponse('Please enter your phone number.');
+                    phoneNumberInput.focus();
+                    return;
+                }
+                try {
+                    const response = await fetch(`/wa/code?phoneNumber=${encodeURIComponent(phoneNumber)}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to get code. Please check your phone number.');
+                    }
+                    const { code } = await response.json();
+                    showResponse(`Your Pairing Code: ${code}`, true);
+                } catch (error) {
+                    showResponse(error.message);
+                }
+            }
+        });
+
+        function showResponse(message, success = false) {
+            responseContainer.textContent = '';
+            responseContainer.style.color = success ? '#0f0' : '#f00';
+            responseContainer.classList.remove('hidden');
+            typeWriterEffect(message, responseContainer);
+        }
+
+        function typeWriterEffect(text, container) {
+            let i = 0;
+            function typeWriter() {
+                if (i < text.length) {
+                    container.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 50);
+                }
+            }
+            typeWriter();
+        }
+    </script>
+</body>
+</html>
