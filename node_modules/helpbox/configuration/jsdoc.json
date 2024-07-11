@@ -1,0 +1,6 @@
+{
+    "babel":   { "presets": ["env"] },
+    "source":  { "include": ["source/"] },
+    "plugins": ["node_modules/jsdoc-babel"],
+    "opts":    { "destination": "documentation" }
+}

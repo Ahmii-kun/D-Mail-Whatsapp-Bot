@@ -1,0 +1,85 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function seekForNS(node, parentNS) {
+    if (!node.attributes)
+        return parentNS;
+    var ns = {};
+    for (var name_1 in parentNS)
+        ns[name_1] = parentNS[name_1];
+    for (var name_2 in node.attributes) {
+        if (name_2.indexOf('xmlns:') === 0 || name_2 === 'xmlns') {
+            var value = node.attributes[name_2];
+            if (name_2 === 'xmlns')
+                ns._default = value;
+            else
+                ns[name_2.substring('xmlns:'.length)] = value;
+        }
+    }
+    return ns;
+}
+function mutateNodeNS(node, parentNS) {
+    if (parentNS === void 0) { parentNS = {}; }
+    if (!node)
+        return undefined;
+    if (node.find)
+        return node;
+    var nss = seekForNS(node, parentNS);
+    if (node.name) {
+        for (var ns in nss) {
+            if (ns === '_default' && node.name.indexOf(':') === -1) {
+                node.name = nss[ns] + node.name;
+                break;
+            }
+            else if (node.name.indexOf(ns + ':') === 0) {
+                node.name = nss[ns] + node.name.substring((ns + ':').length);
+                break;
+            }
+        }
+    }
+    node.findIndex = function (name) {
+        for (var index = 0; index < node.elements.length; ++index)
+            if (node.elements[index] && node.elements[index].name && node.elements[index].name === name)
+                return index;
+        return -1;
+    };
+    node.find = function (name) {
+        for (var _i = 0, _a = node.elements; _i < _a.length; _i++) {
+            var element = _a[_i];
+            if (element && element.name && element.name === name)
+                return element;
+        }
+        throw new Error('Cannot find the XML element : ' + name);
+    };
+    node.findMany = function (name) {
+        var elements = [];
+        for (var _i = 0, _a = node.elements; _i < _a.length; _i++) {
+            var element = _a[_i];
+            if (element && element.name && element.name === name)
+                elements.push(element);
+        }
+        return elements;
+    };
+    node.findText = function () {
+        for (var _i = 0, _a = node.elements; _i < _a.length; _i++) {
+            var element = _a[_i];
+            if (element && element.type === 'text')
+                return element.text;
+        }
+        return '';
+    };
+    node.findTexts = function () {
+        var texts = [];
+        for (var _i = 0, _a = node.elements; _i < _a.length; _i++) {
+            var element = _a[_i];
+            if (element && element.type === 'text')
+                texts.push(element.text);
+        }
+        return texts;
+    };
+    if (node.elements)
+        node.elements.forEach(function (n) { return mutateNodeNS(n, nss); });
+    else
+        node.elements = [];
+    return node;
+}
+exports.mutateNodeNS = mutateNodeNS;

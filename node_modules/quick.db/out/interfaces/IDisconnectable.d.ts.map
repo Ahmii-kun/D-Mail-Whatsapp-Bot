@@ -1,0 +1,1 @@
+{"version":3,"file":"IDisconnectable.d.ts","sourceRoot":"","sources":["../../src/interfaces/IDisconnectable.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAEpC,MAAM,WAAW,eAAgB,SAAQ,OAAO;IAC5C,UAAU,IAAI,OAAO,CAAC,OAAO,CAAC,CAAC;CAClC"}

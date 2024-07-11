@@ -1,0 +1,9 @@
+import { XMLElementUtil } from './XMLElementUtil';
+import { XMLElement } from './XMLElement';
+export declare abstract class XML {
+    static parse(xml: string | Int8Array): XMLElementUtil;
+    static parseJSON(xml: string | Int8Array, compact?: boolean): XMLElementUtil;
+    static parseXML(xml: string | Int8Array): XMLElementUtil;
+    static toJSON(xml: string): string;
+    static toXML(xml: XMLElement | any, includeDeclaration?: boolean): string;
+}

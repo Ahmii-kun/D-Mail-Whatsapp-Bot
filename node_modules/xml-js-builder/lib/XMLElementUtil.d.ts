@@ -1,0 +1,16 @@
+import { XMLElement } from './XMLElement';
+export declare function mutateNodeNS(node: XMLElement, parentNS?: {
+    [name: string]: string;
+}): XMLElementUtil;
+export interface XMLElementUtil extends XMLElement {
+    declaration?: any;
+    attributes: any;
+    elements: XMLElementUtil[];
+    name: string;
+    type: string;
+    findIndex(name: string): number;
+    find(name: string): XMLElementUtil;
+    findMany(name: string): XMLElementUtil[];
+    findText(): string;
+    findTexts(): string[];
+}
