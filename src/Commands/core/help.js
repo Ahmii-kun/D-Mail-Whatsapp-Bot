@@ -24,7 +24,7 @@ export default class HelpCommand extends BaseCommand {
     
         if (!context) {
             const senderId = M.sender.jid.split('@')[0];
-            let message = `🤖 Greetings *@${senderId}*, I am *${this.client.config.session}*\n\n🔖 *Prefix*: [ ${prefix} ]\n\n📚 *Here are the commands you can use*:\n\n`;
+            let message = `🤖 Greetings *@${senderId}*, I am *${this.client.config.name}*\n\n🔖 *Prefix*: [ ${prefix} ]\n\n📚 *Here are the commands you can use*:\n\n`;
     
             let categories = new Set(commands
                 .filter(({ config }) => config.category !== 'dev' || M.sender.isMod)
