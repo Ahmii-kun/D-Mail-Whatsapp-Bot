@@ -57,10 +57,11 @@ Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://g
 
 <p align="center">
     <a href="https://codespaces.new/Ahmii-kun/D-Mail-Whatsapp-Bot">
-        <img src="https://aaronblondeau.com/assets/images/codespaces.jpg" width="170px" alt="Deploy on codespace" class="round-button">
+        <img src="https://aaronblondeau.com/assets/images/codespaces.jpg" width="170px" alt="Deploy on codespace" style="border-radius: 50%; border: 2px solid #000;">
     </a>
     <br>
 </p>
+
 
 <style>
     .round-button {
