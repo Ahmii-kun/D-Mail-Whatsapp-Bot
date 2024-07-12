@@ -53,6 +53,16 @@ Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://g
     </a>
     <br>     
 </p>
+<h4 align="center"> Deploy on CodeSpaces
+</h4>
+
+<p align="center" >
+    <a href="https://codespaces.new/Ahmii-kun/D-Mail-Whatsapp-Bot">
+    <img src="" width="170px" alt="Deploy on codespace" >
+    </a>
+    <br>     
+</p>
+
 </details>
 
 <br>
