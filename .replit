@@ -1,3 +1,6 @@
-language = "nodejs";
-run = "pm2 start app.js && pm2 save && pm2 logs";
-entrypoint = "app.js";
+language = "nodejs"
+run = "node app.js"
+
+[deployment]
+run = ["sh", "-c", "node app.js"]
+
