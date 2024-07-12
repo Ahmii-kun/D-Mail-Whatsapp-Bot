@@ -53,15 +53,22 @@ Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://g
     </a>
     <br>     
 </p>
-<h4 align="center"> Deploy on CodeSpaces
-</h4>
+<h4 align="center"> Deploy on CodeSpaces</h4>
 
-<p align="center" >
+<p align="center">
     <a href="https://codespaces.new/Ahmii-kun/D-Mail-Whatsapp-Bot">
-    <img src="https://aaronblondeau.com/assets/images/codespaces.jpg" width="170px" alt="Deploy on codespace" >
+        <img src="https://aaronblondeau.com/assets/images/codespaces.jpg" width="170px" alt="Deploy on codespace" class="round-button">
     </a>
-    <br>     
+    <br>
 </p>
+
+<style>
+    .round-button {
+        border-radius: 50%;
+        border: 2px solid #000; /* Optional: Add a border */
+    }
+</style>
+
 
 </details>
 
