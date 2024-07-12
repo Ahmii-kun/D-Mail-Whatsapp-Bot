@@ -1,4 +1,4 @@
-import ytdl from '@distube/ytdl-core';
+import ytdl from 'ytdl-core';
 import { createWriteStream } from 'fs';
 import { readFile, unlink } from 'fs/promises';
 import { tmpdir } from 'os';
