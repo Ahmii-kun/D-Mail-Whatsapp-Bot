@@ -27,11 +27,7 @@ Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://g
 
   
 <p align="center">
-<a href="https://github.com/Ahmii-kun"><img title="Owner" src="https://img.shields.io/badge/Owner-D%20Mail-white.svg?style=for-the-badge&logo=github" width="170px"></a>
-
- <a href="https://github.com/Ahmii-kun/D-Mail-Whatsapp-Bot/blob/main/LICENSE.md">
-  
-<img src='https://img.shields.io/github/license/FantoX/Atlas-MD?color=%231e81b0&style=for-the-badge' width="114px">
+<a href="https://github.com/Ahmii-kun"><img title="Owner" src="https://img.shields.io/badge/Owner-D%20Mail-white.svg?style=for-the-badge&logo=github" width="170px"></a
 
 <p align="center">
 <a href="https://github.com/Ahmii-kun"><img title="" src="https://img.shields.io/badge/Maintained-YES-green.svg?style=for-the-badge" width="143px"></a>
