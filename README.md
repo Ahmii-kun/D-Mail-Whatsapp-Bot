@@ -41,7 +41,7 @@ Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://g
 ---
  <br>
  
- # 🧩 Deploy Atlas
+ # 🧩 Deploy D-Mail
      
 <details close>
 <summary>Click to choose your favourite platform to Deploy</summary>
@@ -134,7 +134,6 @@ PERMENANTAFK | set true for permenanet afk and false for temporary afk
 <br>
 
 - Read [PublicKeys.md](https://github.com/Ahmii-kun/D-Mail-Whatsapp-Bot/blob/main/PublicKeys.md) to use our `provided public keys` if you are lazy to create your own. We have already provided everying you need to run the bot.
-- Changeable between `20 added Characters` ( Atlas, Power, Makima, Denji, Zero Two, Chika, Miku, Marin Kitagawa ) and more can be added by user inside `BotCharacters.js` file. Type `-charlist` command to get character list.
 - Fully powered by MongoDb).
 - Bot on/off.
 - Single prefix ( "-" ).
