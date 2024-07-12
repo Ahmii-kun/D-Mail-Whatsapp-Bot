@@ -7,7 +7,7 @@
 </h1>
 
 <p align="center"> 
-Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://github.com/Ahmii-kun">Ahmii</a> made for simple utility features built with Baileys Multi Device support.
+Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://github.com/Ahmii-kun">Ahmii</a> made for simple utility features built with Baileys Multi Device support, make sure to fork and star the repo.
 
 <h3 align="center"> D-Mail - A Trip To Beta Timeline
 </h4>
@@ -140,7 +140,6 @@ PERMENANTAFK | set true for permenanet afk and false for temporary afk
       
 <br>
 
-- Read [PublicKeys.md](https://github.com/Ahmii-kun/D-Mail-Whatsapp-Bot/blob/main/PublicKeys.md) to use our `provided public keys` if you are lazy to create your own. We have already provided everying you need to run the bot.
 - Fully powered by MongoDb).
 - Bot on/off.
 - Single prefix ( "-" ).
@@ -148,6 +147,7 @@ PERMENANTAFK | set true for permenanet afk and false for temporary afk
 - Auto status view.
 - Anti delete/ anti viewonce. 
 - AntiLink and other stuff, lol check helpList I'm too lazy for this.
+- set custom welcome and goodbye message
 - User Banning.
 - Highest Security compared to most other public bots.
 
