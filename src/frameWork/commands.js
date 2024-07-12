@@ -31,7 +31,7 @@ export default class CommandLoader {
                                         this.commands.set(commandInstance.name, commandInstance);
                                         if (commandInstance.config.aliases) {
                                             commandInstance.config.aliases.forEach((cmdName) =>
-                                                this.commands.set(cmdName, commandInstance)
+                                                this.aliases.set(cmdName, commandInstance)
                                             );
                                         }
                                     } else {
