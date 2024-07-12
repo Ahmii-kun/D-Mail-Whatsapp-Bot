@@ -1,4 +1,13 @@
 {
+  "name": "D-mail",
+  "version": "1.0.0",
+  "description": "A trip to Beta Timeline.",
+  "main": "app.js.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --max-old-space-size=8000 app.js"
+  },
+{
   "type": "module",
   "dependencies": {
     "@shineiichijo/canvas-chan": "^1.0.1",
