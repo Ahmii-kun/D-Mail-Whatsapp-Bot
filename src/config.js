@@ -19,7 +19,6 @@ const config = {
   TENOR_API_KEY: process.env.TENOR_API_KEY || 'YOUR_TENOR_API_KEY',
   afkPermenant: process.env.PERMENANTAFK || false,
   API_URL: 'https://d-mail-api.vercel.app/',
-  chatBotUrl: 'http://api.brainshop.ai/get?bid=176025&key=YJBKp4WNgw4F1Pwn&uid=[uid]&msg=[msg]',
   PORT: Number(process.env.PORT || Math.floor(Math.random() * (9000 - 3000) + 3000)),
   mods: []
 };
