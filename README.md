@@ -63,13 +63,6 @@ Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://g
 </p>
 
 
-<style>
-    .round-button {
-        border-radius: 50%;
-        border: 2px solid #000; /* Optional: Add a border */
-    }
-</style>
-
 
 </details>
 
