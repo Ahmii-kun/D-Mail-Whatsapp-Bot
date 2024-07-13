@@ -13,7 +13,6 @@ export default class Eval extends BaseCommand {
 
     async run(M, { context }) {
         const { bot } = await this.client.DB.getGroup(M.from)
-        const options = ['on', 'off']
         let Bot
         if (!context) return M.reply('bot on / bot off\n\nUse like this')
         Bot = context.trim().split(' ')[0].trim()
