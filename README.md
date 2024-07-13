@@ -80,7 +80,7 @@ Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://g
       
 - [Fork Main Repo](https://github.com/Ahmii-kun/D-Mail-Whatsapp-Bot/fork)
 - Click on `Deploy to Repl.it` button.
-- After cloning is done in Repl.it go to `Secrets` in your Repl.it project and put these values (Mandatory).
+- After cloning is done in Repl.it go to `.env` file in your Repl.it project and change these values (Mandatory).
   
 <br>
       
