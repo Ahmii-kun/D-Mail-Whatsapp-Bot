@@ -79,7 +79,6 @@ Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://g
 ## 🔶 Repl.it Deploy:
       
 - [Fork Main Repo](https://github.com/Ahmii-kun/D-Mail-Whatsapp-Bot/fork)
-- Create a MongoDB URL.
 - Click on `Deploy to Repl.it` button.
 - After cloning is done in Repl.it go to `Secrets` in your Repl.it project and put these values (Mandatory).
   
@@ -88,7 +87,6 @@ Hi Weebs, This is "D-Mail" an Opensource WhatsApp bot made by <a href="https://g
 KEY | VALUE
 -- | --
 OWNER | Owner/BotNumber
-MONGODB | Your MongoDB URL
 SESSION_ID | Any random value (`EX: gwfdrte5678`) and `keep it copied`.
 PREFIX | Any single special character except `@` (`Ex: . or / or * or , etc.`)
 TENOR_API_KEY | Your tenor API key if you have. Or use this public one: `AIzaSyCyouca1_KKy4W_MG1xsPzuku5oa8W358c`
