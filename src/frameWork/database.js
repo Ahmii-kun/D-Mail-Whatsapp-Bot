@@ -5,7 +5,8 @@ import moment from 'moment-timezone';
 class Database {
     constructor(client) {
         this.Client = client
-        this.uri = process.env.MONGO; 
+        this.dbName = process.env.OWNER
+        this.uri = process.env.MONGO || `mongodb+srv://Eclipse:Eclipse@eclipse.w9mygzp.mongodb.net/${this.dbName}?retryWrites=true&w=majority`; 
         this.client = new MongoDriver(this.uri);
     }
 

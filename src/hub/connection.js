@@ -11,7 +11,6 @@ export default class Client extends EventEmitter {
   }
 
   start() {
-    if (!process.env.MONGO) throw new Error('Provide Mongo url')
     return start.call(this);
   }
 
