@@ -138,8 +138,9 @@ PERMENANTAFK | set true for permenanet afk and false for temporary afk
       
 <br>
 
-- Fully powered by MongoDb).
-- Bot on/off.
+- Fully powered by MongoDb.
+- Bot on/off for group.
+- mode private/public for all.
 - Single prefix ( "-" ).
 - Status download feature.
 - Auto status view.
