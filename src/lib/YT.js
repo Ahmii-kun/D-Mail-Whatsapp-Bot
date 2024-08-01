@@ -1,71 +1,63 @@
 import ytdl from 'ytdl-core';
-import { createWriteStream } from 'fs';
-import { readFile, unlink } from 'fs/promises';
-import { tmpdir } from 'os';
-import Utils from './utils.js';
+import qs from 'qs';
+import axios from 'axios';
 
 export default class YT {
     constructor(url, type = 'video') {
         this.url = url;
         this.type = type;
-        this.utils = new Utils();
     }
 
     validate = () => ytdl.validateURL(this.url);
 
     getInfo = async () => await ytdl.getInfo(this.url);
 
-    download = async (quality = 'low') => {
+    download = async (desiredQuality = 'auto') => {
         try {
-            const downloadStream = async (url, options, filename) => {
-                const stream = createWriteStream(filename);
-                ytdl(url, options).pipe(stream);
-                return new Promise((resolve, reject) => {
-                    stream.on('finish', () => {
-                        resolve(filename);
-                    });
-                    stream.on('error', (error) => {
-                        console.error(`Stream error for ${filename}:`, error);
-                        reject(error);
-                    });
-                });
-            };
+          console.log(this.url);
+          const form = {
+            k_query: this.url,
+            k_page: "home",
+            hl: "en",
+            q_auto: 0,
+          };
+          let response = await axios.post(
+            "https://in-y2mate.com/mates/analyzeV2/ajax",
+            qs.stringify(form),
+          );
 
-            if (this.type === 'audio' || quality === 'low') {
-                const filename = `${tmpdir()}/${Math.random().toString(36).substring(2)}.${this.type === 'audio' ? 'mp3' : 'mp4'}`;
-                await downloadStream(this.url, { quality: this.type === 'audio' ? 'highestaudio' : 'highest' }, filename);
-                const buffer = await readFile(filename);
-                await unlink(filename);
-                return buffer;
-            }
+          let links = response.data.links.mp4;
 
-            const audioFilename = `${tmpdir()}/${Math.random().toString(36).substring(2)}.mp3`;
-            const videoFilename = `${tmpdir()}/${Math.random().toString(36).substring(2)}.mp4`;
-            await downloadStream(this.url, { quality: 'highestaudio' }, audioFilename);
-            await downloadStream(this.url, { quality: quality === 'high' ? 'highestvideo' : 'lowestvideo' }, videoFilename);
+          const qualityMapping = {
+            high: '137',   // 1080p
+            medium: '136', // 720p
+            low: '135',    // 480p
+          };
 
-            const outputFilename = `${tmpdir()}/${Math.random().toString(36).substring(2)}.mp4`;
-            await this.utils.exec(`ffmpeg -i ${videoFilename} -i ${audioFilename} -c:v copy -c:a aac ${outputFilename}`);
+          let selectedLink = links[qualityMapping[desiredQuality]] || links.auto;
 
-            const buffer = await readFile(outputFilename);
-            await Promise.all([unlink(videoFilename), unlink(audioFilename), unlink(outputFilename)]);
-            return buffer;
+          if (!selectedLink) {
+            throw new Error('Desired quality not available.');
+          }
+
+          let linkToken = selectedLink.k;
+          let vid = response.data.vid;
+
+          const res = await axios.post(
+            "https://in-y2mate.com/mates/convertV2/index",
+            qs.stringify({
+              vid,
+              k: linkToken,
+            }),
+          );
+
+          let { data } = await axios.get(res.data.dlink, {
+            responseType: "arraybuffer",
+          });
+
+          return data;
         } catch (error) {
-            console.error('Error during download:', error);
+          throw new Error(error);
         }
-    };
-
-    getDownloadURL = async () => {
-        try {
-            const info = await ytdl.getInfo(this.url);
-            const format = ytdl.chooseFormat(info.formats, { quality: 'highest' });
-            if (format) {
-                return format.url;
-            } else {
-                throw new Error('No suitable format found');
-            }
-        } catch (error) {
-            console.error('Error getting download URL:', error);
-        }
-    };
+      }
 }

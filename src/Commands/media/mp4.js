@@ -40,6 +40,7 @@ try {
             
             const quality = flags.find(f => f.startsWith('--quality=') && ['low', 'medium', 'high'].includes(f.split('=')[1]))?.split('=')[1] || 'medium';
             const { videoDetails } = await getInfo();
+            console.log
             if (Number(videoDetails.lengthSeconds) > 1800) return M.reply('The video is too long, it will take some time to download.');
             
             const video = await download(quality);

@@ -1,3 +1,27 @@
 language = "nodejs"
 run = "pm2 start app.js && pm2 save && pm2 logs"
 entrypoint = "app.js"
+
+[[ports]]
+localPort = 4034
+externalPort = 3003
+
+[[ports]]
+localPort = 4196
+externalPort = 3000
+
+[[ports]]
+localPort = 4369
+externalPort = 4200
+
+[[ports]]
+localPort = 5322
+externalPort = 80
+
+[[ports]]
+localPort = 6219
+externalPort = 3001
+
+[[ports]]
+localPort = 8702
+externalPort = 3002
