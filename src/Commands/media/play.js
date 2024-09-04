@@ -1,5 +1,5 @@
 import BaseCommand from '../../frameWork/Command/base.js';
-import YT  from '../../lib/YT.js'
+import axios  from 'axios'
 
 export default class Play extends BaseCommand {
     constructor() {
@@ -15,7 +15,8 @@ export default class Play extends BaseCommand {
         const term = context.trim();
         const videos = await this.client.utils.fetch(`${this.client.config.API_URL}ytsearch?query=${term}`);
         if (!videos || !videos.length) return void M.reply(`No matching songs found | *"${term}"*`);
-        const buffer = await new YT(videos[0].url, 'audio').download();      
+        const { data } = await axios.get(`${this.client.config.API_URL}download?url=${videos[0].url}&type=audio`)
+        const buffer = await this.client.utils.getBuffer(data.data.url)      
             return void (await M.reply(buffer, 'audio', undefined, 'audio/mpeg', undefined, undefined, {
                 title: videos[0].title,
                 thumbnail: await this.client.utils.getBuffer(videos[0].thumbnail),

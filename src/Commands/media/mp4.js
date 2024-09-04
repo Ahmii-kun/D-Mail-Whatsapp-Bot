@@ -1,6 +1,5 @@
 import BaseCommand from '../../frameWork/Command/base.js';
 import axios  from 'axios'
-import YT  from '../..//lib/YT.js'
 
 
 export default class MP4 extends BaseCommand {
@@ -35,21 +34,16 @@ try {
 
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
         try {
-            const { validate, download, getInfo } = new YT(url);
-            if (!validate()) return M.reply('Provide a valid YouTube video URL, Baka!');
-            
             const quality = flags.find(f => f.startsWith('--quality=') && ['low', 'medium', 'high'].includes(f.split('=')[1]))?.split('=')[1] || 'medium';
-            const { videoDetails } = await getInfo();
-            console.log
-            if (Number(videoDetails.lengthSeconds) > 1800) return M.reply('The video is too long, it will take some time to download.');
-            
-            const video = await download(quality);
-            const text = `🎬 *Title: ${videoDetails.title}* 📺 *Channel: ${videoDetails.author.name}* ⏱️ *Duration: ${videoDetails.lengthSeconds}s*`;
+            const { data } = await axios.get(`${this.client.config.API_URL}download?url=${url}&quality=${quality}`)  
+            const videoDetails = data.data 
+            const video = await this.client.utils.getBuffer(videoDetails.url) 
+            const text = `🎬 *Title: ${videoDetails.title}* ⏱️ *Duration: ${videoDetails.duration}s*`;
             return M.reply(video, 'video', undefined, undefined, text).catch(async () => {
                 M.reply("Sending the video as Document as the video's too big");
                 setTimeout(async () => {
-                    await M.reply(await this.client.utils.getBuffer(videoDetails.thumbnails[0].url), 'image', undefined, undefined, text);
-                    await M.reply(video, 'document', undefined, 'video/mp4', undefined, undefined, undefined, await this.client.utils.getBuffer(videoDetails.thumbnails[0].url), `${videoDetails.title}.mp4`);
+                    await M.reply(await this.client.utils.getBuffer(videoDetails.thumbnails, 'image', undefined, undefined, text));
+                    await M.reply(video, 'document', undefined, 'video/mp4', undefined, undefined, undefined, await this.client.utils.getBuffer(videoDetails.thumbnails), `${videoDetails.title}.mp4`);
                 }, 3000);
             });
         } catch (e) {
