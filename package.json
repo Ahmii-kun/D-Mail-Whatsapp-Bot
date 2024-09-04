@@ -11,7 +11,7 @@
   "dependencies": {
     "@shineiichijo/canvas-chan": "^1.0.1",
     "@whiskeysockets/baileys": "^6.7.5",
-    "axios": "^1.7.2",
+    "axios": "^1.7.4",
     "canvacord": "^6.0.2",
     "canvas": "^2.11.2",
     "chalk": "^5.3.0",
